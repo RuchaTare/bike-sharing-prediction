@@ -41,6 +41,8 @@ jobs:
 
       - name: Build Sphinx documentation
         run: |
+          git config --global user.email "tarerucha8@gmail.com"
+          git config --global user.name "Rucha Tare"
           sphinx-apidoc -o docs .
           cd ./docs
           make html
