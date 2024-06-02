@@ -41,6 +41,7 @@ jobs:
 
       - name: Build Sphinx documentation
         run: |
+          sphinx-apidocs -o docs .
           cd docs  # Change to the directory containing your Sphinx conf.py
           make html
 
