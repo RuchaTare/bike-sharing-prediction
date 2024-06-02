@@ -1,5 +1,6 @@
 pandas
 logging
-sphinx-autodocs
+sphinx
 myst_parser
 sphinx_markdown_builder
+sphinx_autodoc_typehints
