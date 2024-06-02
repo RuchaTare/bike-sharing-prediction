@@ -7,13 +7,17 @@ read_csv(file_path)
     Read csv file and return a pandas dataframe
 drop_columns(data)
     Drop irrelevant columns
+change_labels(data, config_data)
+    Change labels of columns to more understandable labels as per the data dictionary
+create_dummies(data)
+    Convert the datatype of categorical columns and Create dummy variables for categorical columns
 """
 
 import logging
 import pandas as pd
 
-from utils import read_csv, read_yaml
-from logger import setup_logging
+from .utils import read_csv, read_yaml
+from .logger import setup_logging
 
 
 def drop_columns(data):
@@ -58,15 +62,11 @@ def change_labels(data, config_data):
     data = data.apply(
         lambda col: col.map(column_mappings[col.name]) if col.name in column_mappings else col
     )
-    # data["season"] = data["season"].astype("category")
-    # data["weekday"] = data["weekday"].astype("category")
-    # data["mnth"] = data["mnth"].astype("category")
-    # data["weathersit"] = data["weathersit"].astype("category")
 
 
 def create_dummies(data):
     """
-    Create dummy variables for categorical columns
+    Convert the datatype of categorical columns and Create dummy variables for categorical columns
 
     Parameters
     ----------
@@ -80,6 +80,11 @@ def create_dummies(data):
     """
 
     logging.info("Creating dummy variables")
+
+    data["season"] = data["season"].astype("category")
+    data["weekday"] = data["weekday"].astype("category")
+    data["mnth"] = data["mnth"].astype("category")
+    data["weathersit"] = data["weathersit"].astype("category")
 
     data = pd.get_dummies(data, drop_first=True)
     return data
@@ -103,6 +108,8 @@ def main():
     logging.info(f"The remainder columns after dropping {data.columns}")
 
     change_labels(data, config_data)
+
+    cleaned_data = create_dummies(data)
 
 
 if __name__ == "__main__":
