@@ -21,7 +21,7 @@ from logger import setup_logging
 from utils import read_csv, read_yaml, write_csv
 
 
-def drop_columns(data):
+def drop_columns(data: pd.DataFrame) -> pd.DataFrame:
     """
     Drop irrelevant columns
 
@@ -42,7 +42,7 @@ def drop_columns(data):
     return data
 
 
-def change_labels(data, config_data):
+def change_labels(data: pd.DataFrame, config_data: dict):
     """
     Change labels of columns to more understandable labels as per the data dictionary
 
@@ -65,7 +65,7 @@ def change_labels(data, config_data):
     )
 
 
-def create_dummies(data):
+def create_dummies(data: pd.DataFrame) -> pd.DataFrame:
     """
     Convert the datatype of categorical columns and Create dummy variables for categorical columns
 
@@ -91,29 +91,21 @@ def create_dummies(data):
     return data
 
 
-def main():
+def preprocessor(config_data: dict):
     """
-    Main function to preprocess the data
+    This preprocessor function reads the raw data, drops irrelevant columns, changes labels of columns, creates dummy variables and writes the cleaned data to a csv file
     """
 
-    setup_logging()
-    logging.info("Application started")
+    logging.info("Preprocessing the data")
 
-    config_data = read_yaml("../config.yaml")
-
-    data = read_csv("../data/raw_data.csv")
+    data = read_csv(config_data["raw_data_path"])
     logging.info(f"The shape of the data is : {data.shape}")
     logging.info(data.head(20))
 
     data = drop_columns(data)
-    logging.info(f"The remainder columns after dropping {data.columns}")
 
     change_labels(data, config_data)
 
     cleaned_data = create_dummies(data)
 
     write_csv(cleaned_data, "../data/cleaned_data.csv")
-
-
-if __name__ == "__main__":
-    main()
