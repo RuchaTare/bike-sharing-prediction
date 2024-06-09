@@ -37,7 +37,11 @@
 </section>
 <section id="module-src.logger">
 <span id="src-logger-module"></span><h2>src.logger module<a class="headerlink" href="#module-src.logger" title="Link to this heading">¶</a></h2>
-<p>Logging module for the application.</p>
+<p>This module contains the logging configurations for the application.</p>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h3>
+<p>setup_logging: Setup logging configurations for the application. Writes logs to a file and console.</p>
+</section>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.logger.setup_logging">
 <span class="sig-prename descclassname"><span class="pre">src.logger.</span></span><span class="sig-name descname"><span class="pre">setup_logging</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.logger.setup_logging" title="Link to this definition">¶</a></dt>
@@ -79,73 +83,8 @@
 </dd></dl>
 
 </section>
-<section id="module-src.preprocessing">
-<span id="src-preprocessing-module"></span><h2>src.preprocessing module<a class="headerlink" href="#module-src.preprocessing" title="Link to this heading">¶</a></h2>
-<p>Preprocess the data</p>
-<section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h3>
-<dl class="simple">
-<dt>read_csv(file_path)</dt><dd><p>Read csv file and return a pandas dataframe</p>
-</dd>
-<dt>drop_columns(data)</dt><dd><p>Drop irrelevant columns</p>
-</dd>
-<dt>change_labels(data, config_data)</dt><dd><p>Change labels of columns to more understandable labels as per the data dictionary</p>
-</dd>
-<dt>create_dummies(data)</dt><dd><p>Convert the datatype of categorical columns and Create dummy variables for categorical columns</p>
-</dd>
-</dl>
-</section>
-<dl class="py function">
-<dt class="sig sig-object py" id="src.preprocessing.change_labels">
-<span class="sig-prename descclassname"><span class="pre">src.preprocessing.</span></span><span class="sig-name descname"><span class="pre">change_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.preprocessing.change_labels" title="Link to this definition">¶</a></dt>
-<dd><p>Change labels of columns to more understandable labels as per the data dictionary</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>pandas.DataFrame</em>) – The data to be processed</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="src.preprocessing.create_dummies">
-<span class="sig-prename descclassname"><span class="pre">src.preprocessing.</span></span><span class="sig-name descname"><span class="pre">create_dummies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.preprocessing.create_dummies" title="Link to this definition">¶</a></dt>
-<dd><p>Convert the datatype of categorical columns and Create dummy variables for categorical columns</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>pandas.DataFrame</em>) – The data to be processed</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The data with dummy variables created</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pandas.DataFrame</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="src.preprocessing.drop_columns">
-<span class="sig-prename descclassname"><span class="pre">src.preprocessing.</span></span><span class="sig-name descname"><span class="pre">drop_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.preprocessing.drop_columns" title="Link to this definition">¶</a></dt>
-<dd><p>Drop irrelevant columns</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>pandas.DataFrame</em>) – The data to be processed</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The data with irrelevant columns dropped</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pandas.DataFrame</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="src.preprocessing.main">
-<span class="sig-prename descclassname"><span class="pre">src.preprocessing.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.preprocessing.main" title="Link to this definition">¶</a></dt>
-<dd><p>Main function to preprocess the data</p>
-</dd></dl>
-
+<section id="src-preprocessing-module">
+<h2>src.preprocessing module<a class="headerlink" href="#src-preprocessing-module" title="Link to this heading">¶</a></h2>
 </section>
 <section id="module-src.utils">
 <span id="src-utils-module"></span><h2>src.utils module<a class="headerlink" href="#module-src.utils" title="Link to this heading">¶</a></h2>
@@ -180,6 +119,20 @@
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.utils.write_csv">
+<span class="sig-prename descclassname"><span class="pre">src.utils.</span></span><span class="sig-name descname"><span class="pre">write_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.utils.write_csv" title="Link to this definition">¶</a></dt>
+<dd><p>Write the data to a csv file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – The data to be written to the csv file</p></li>
+<li><p><strong>file_path</strong> (<em>str</em>) – The path to the csv file</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
