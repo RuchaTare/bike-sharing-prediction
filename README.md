@@ -1,4 +1,4 @@
-# IIIT-B Bike sharing Assignment using Linear Regression
+# Bike sharing demand prediction
 
 ## Problem Statement:
 
