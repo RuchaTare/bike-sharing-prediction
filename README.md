@@ -40,6 +40,8 @@ Data Dictionary :
 - cnt: count of total rental bikes including both casual and registered
 
 ## Key findings from EDA:
+- Categorical Columns : season, yr, month, holiday, weekday, workingday, weathersit
+- Numerical Columns : cnt, windspeed, hum, temp
 - Column "cnt" is our target variable with mean 4508
 - No null values in the any of the columns.
 - No duplicate rows in the data set.
@@ -49,6 +51,7 @@ Data Dictionary :
     - casual and regsitered : Both of these columns are to show the type of users , this is irrelevant to our analysis
     - atemp : atemp is adjusted temperature , since we already have temparature we will drop this column
     - dteday : Since we already have day, month and year we donot need date
+
 - Season 3(fall) has the highest number of bikes rented about 5500
 - High bike share from June to Sept and falls before and after those months. June is highest followed by september
 - The year 2019 had a higher count of users as compared to the year 2018

@@ -7,7 +7,7 @@ import logging
 import yaml
 
 
-def read_yaml(file_path):
+def read_yaml(file_path: str) -> dict:
     """
     Read yaml file and return the content
 
@@ -28,7 +28,7 @@ def read_yaml(file_path):
     return config_data
 
 
-def read_csv(file_path):
+def read_csv(file_path: str) -> pd.DataFrame:
     """
     Read csv file and return a pandas dataframe
 
@@ -47,7 +47,8 @@ def read_csv(file_path):
     data = pd.read_csv(file_path, engine="python", encoding="utf-8")
     return data
 
-def write_csv(data, file_path):
+
+def write_csv(data: pd.DataFrame, file_path: str):
     """
     Write the data to a csv file
 

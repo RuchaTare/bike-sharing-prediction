@@ -1,16 +1,18 @@
 """
-Preprocess the data
+Preprocess the data and write the cleaned data to a csv file
 
 Functions
 ---------
-read_csv(file_path)
-    Read csv file and return a pandas dataframe
-drop_columns(data)
-    Drop irrelevant columns
-change_labels(data, config_data)
+_preprocess_columns(data: pd.DataFrame, columns_to_drop: list, category_columns: list) -> pd.DataFrame
+    Drop irrelevant columns, change the datatype of categorical columns and change the labels of columns
+_change_labels(data: pd.DataFrame, config_data: dict)
     Change labels of columns to more understandable labels as per the data dictionary
-create_dummies(data)
+_one_hot_encoding(data: pd.DataFrame) -> pd.DataFrame
     Convert the datatype of categorical columns and Create dummy variables for categorical columns
+_scaling(data: pd.DataFrame) -> pd.DataFrame
+    Minmax scale the data
+preprocessor(config_data: dict)
+    Acts as the main function for preprocessing the data
 """
 
 import logging
@@ -21,9 +23,11 @@ from logger import setup_logging
 from utils import read_csv, read_yaml, write_csv
 
 
-def drop_columns(data: pd.DataFrame) -> pd.DataFrame:
+def _preprocess_columns(
+    data: pd.DataFrame, columns_to_drop: list, category_columns: list
+) -> pd.DataFrame:
     """
-    Drop irrelevant columns
+    Drop irrelevant columns, change the datatype of categorical columns and change the labels of columns
 
     Parameters
     ----------
@@ -36,13 +40,14 @@ def drop_columns(data: pd.DataFrame) -> pd.DataFrame:
         The data with irrelevant columns dropped
     """
 
-    logging.info("Dropping irrelevant columns")
+    logging.info("Preprocessing columns")
 
-    data = data.drop(["instant", "dteday", "casual", "registered"], axis=1)
+    data = data.drop(columns=columns_to_drop, axis=1)
+    data = data.astype({columns: "category" for columns in category_columns})
     return data
 
 
-def change_labels(data: pd.DataFrame, config_data: dict):
+def _change_labels(data: pd.DataFrame, config_data: dict):
     """
     Change labels of columns to more understandable labels as per the data dictionary
 
@@ -52,7 +57,7 @@ def change_labels(data: pd.DataFrame, config_data: dict):
         The data to be processed
     """
 
-    logging.info("Changing labels of columns")
+    logging.info("Changing column labels to more understandable labels")
 
     column_mappings = {
         "weekday": config_data["weekday_labels"],
@@ -60,12 +65,15 @@ def change_labels(data: pd.DataFrame, config_data: dict):
         "mnth": config_data["mnth_labels"],
         "season": config_data["season_labels"],
     }
-    data = data.apply(
-        lambda col: col.map(column_mappings[col.name]) if col.name in column_mappings else col
-    )
+
+    for col, mapping in column_mappings.items():
+        if col in data.columns:
+            data[col] = data[col].map(lambda x: mapping.get(x, x))
+
+    return data
 
 
-def create_dummies(data: pd.DataFrame) -> pd.DataFrame:
+def _one_hot_encoding(data: pd.DataFrame, cat_columns_to_encode: list) -> pd.DataFrame:
     """
     Convert the datatype of categorical columns and Create dummy variables for categorical columns
 
@@ -82,12 +90,31 @@ def create_dummies(data: pd.DataFrame) -> pd.DataFrame:
 
     logging.info("Creating dummy variables")
 
-    data["season"] = data["season"].astype("category")
-    data["weekday"] = data["weekday"].astype("category")
-    data["mnth"] = data["mnth"].astype("category")
-    data["weathersit"] = data["weathersit"].astype("category")
+    data = pd.get_dummies(data, columns=cat_columns_to_encode, drop_first=True)
+    return data
 
-    data = pd.get_dummies(data, drop_first=True)
+
+def _scaling(data: pd.DataFrame, numerical_columns: list) -> pd.DataFrame:
+    """
+    Minmax scale the data
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        The data to be processed
+
+    Returns
+    -------
+    pandas.DataFrame
+        The scaled data
+    """
+
+    logging.info("Minmax scaling numerical columns")
+
+    # scale only the numerical columns
+    data[numerical_columns] = (data[numerical_columns] - data[numerical_columns].min()) / (
+        data[numerical_columns].max() - data[numerical_columns].min()
+    )
     return data
 
 
@@ -100,12 +127,16 @@ def preprocessor(config_data: dict):
 
     data = read_csv(config_data["raw_data_path"])
     logging.info(f"The shape of the data is : {data.shape}")
-    logging.info(data.head(20))
 
-    data = drop_columns(data)
+    preprocessed_data = _preprocess_columns(
+        data, config_data["columns_to_drop"], config_data["category_columns"]
+    )
 
-    change_labels(data, config_data)
+    labelled_data = _change_labels(preprocessed_data, config_data)
 
-    cleaned_data = create_dummies(data)
+    encoded_data = _one_hot_encoding(labelled_data, config_data["cat_columns_to_encode"])
+    logging.info(f"The shape of the cleaned data is : {encoded_data.shape}")
 
-    write_csv(cleaned_data, "../data/cleaned_data.csv")
+    data = _scaling(encoded_data, config_data["numerical_columns"])
+
+    write_csv(data, config_data["cleaned_data_path"])
