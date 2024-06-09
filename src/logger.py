@@ -1,5 +1,9 @@
 """
-Logging module for the application.
+This module contains the logging configurations for the application.
+
+Functions
+---------
+setup_logging: Setup logging configurations for the application. Writes logs to a file and console.
 """
 
 import logging

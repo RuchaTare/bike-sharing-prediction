@@ -39,10 +39,29 @@ Data Dictionary :
 - registered: count of registered users
 - cnt: count of total rental bikes including both casual and registered
 
+## Key findings from EDA:
+- Column "cnt" is our target variable with mean 4508
+- No null values in the any of the columns.
+- No duplicate rows in the data set.
+- No columns that has only one value overall for all records.
+- Columns that could be dropped are 'instant','casual','registered','atemp','dteday'
+    - instant : This columns is just a counter that we donot require for analysis
+    - casual and regsitered : Both of these columns are to show the type of users , this is irrelevant to our analysis
+    - atemp : atemp is adjusted temperature , since we already have temparature we will drop this column
+    - dteday : Since we already have day, month and year we donot need date
+- Season 3(fall) has the highest number of bikes rented about 5500
+- High bike share from June to Sept and falls before and after those months. June is highest followed by september
+- The year 2019 had a higher count of users as compared to the year 2018
+- The bike demand is almost constant throughout the week.
+- Non working days have more number of bikes rented
+- The demand is less on holidays and more on non holidays
+- Approximately 5000 bikes are rented on a weathersit 1 day being the highest followed by about 4000 weathersit 2 and about 2000 on weathersit3 we dont see any rentals on weathersit 4
+
+## Model Training:
+
+### Design Decisions:
 
 ## Linear Regression Results:
-
-### Key findings:
 
 ### Model Performance:
 

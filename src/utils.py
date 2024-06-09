@@ -46,3 +46,18 @@ def read_csv(file_path):
     logging.info(f"Reading data from {file_path}")
     data = pd.read_csv(file_path, engine="python", encoding="utf-8")
     return data
+
+def write_csv(data, file_path):
+    """
+    Write the data to a csv file
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        The data to be written to the csv file
+    file_path : str
+        The path to the csv file
+    """
+
+    logging.info(f"Writing data to {file_path}")
+    data.to_csv(file_path, index=False)

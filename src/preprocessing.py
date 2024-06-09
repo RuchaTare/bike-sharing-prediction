@@ -14,10 +14,11 @@ create_dummies(data)
 """
 
 import logging
+
 import pandas as pd
 
-from .utils import read_csv, read_yaml
-from .logger import setup_logging
+from logger import setup_logging
+from utils import read_csv, read_yaml, write_csv
 
 
 def drop_columns(data):
@@ -110,6 +111,8 @@ def main():
     change_labels(data, config_data)
 
     cleaned_data = create_dummies(data)
+
+    write_csv(cleaned_data, "../data/cleaned_data.csv")
 
 
 if __name__ == "__main__":
