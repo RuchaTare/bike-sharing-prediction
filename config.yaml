@@ -1,3 +1,5 @@
+raw_data_path: "data/raw_data.csv"
+cleaned_data_path: "data/cleaned_data.csv"
 weathersit_labels:
   1: "clear"
   2: "cloudy"
