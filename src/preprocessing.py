@@ -9,8 +9,6 @@ _change_labels(data: pd.DataFrame, config_data: dict)
     Change labels of columns to more understandable labels as per the data dictionary
 _one_hot_encoding(data: pd.DataFrame) -> pd.DataFrame
     Convert the datatype of categorical columns and Create dummy variables for categorical columns
-_scaling(data: pd.DataFrame) -> pd.DataFrame
-    Minmax scale the data
 preprocessor(config_data: dict)
     Acts as the main function for preprocessing the data
 """
@@ -21,6 +19,7 @@ import pandas as pd
 
 from logger import setup_logging
 from utils import read_csv, read_yaml, write_csv
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 
 def _preprocess_columns(
@@ -73,7 +72,7 @@ def _change_labels(data: pd.DataFrame, config_data: dict):
     return data
 
 
-def _one_hot_encoding(data: pd.DataFrame, cat_columns_to_encode: list) -> pd.DataFrame:
+def _one_hot_encoding(data: pd.DataFrame, category_columns: list) -> pd.DataFrame:
     """
     Convert the datatype of categorical columns and Create dummy variables for categorical columns
 
@@ -90,31 +89,11 @@ def _one_hot_encoding(data: pd.DataFrame, cat_columns_to_encode: list) -> pd.Dat
 
     logging.info("Creating dummy variables")
 
-    data = pd.get_dummies(data, columns=cat_columns_to_encode, drop_first=True)
-    return data
+    data = pd.get_dummies(data, columns=category_columns, drop_first=True)
 
+    for col in data.select_dtypes(include=["bool"]).columns:
+        data[col] = data[col].astype(int)
 
-def _scaling(data: pd.DataFrame, numerical_columns: list) -> pd.DataFrame:
-    """
-    Minmax scale the data
-
-    Parameters
-    ----------
-    data : pandas.DataFrame
-        The data to be processed
-
-    Returns
-    -------
-    pandas.DataFrame
-        The scaled data
-    """
-
-    logging.info("Minmax scaling numerical columns")
-
-    # scale only the numerical columns
-    data[numerical_columns] = (data[numerical_columns] - data[numerical_columns].min()) / (
-        data[numerical_columns].max() - data[numerical_columns].min()
-    )
     return data
 
 
@@ -134,9 +113,7 @@ def preprocessor(config_data: dict):
 
     labelled_data = _change_labels(preprocessed_data, config_data)
 
-    encoded_data = _one_hot_encoding(labelled_data, config_data["cat_columns_to_encode"])
+    encoded_data = _one_hot_encoding(labelled_data, config_data["category_columns"])
     logging.info(f"The shape of the cleaned data is : {encoded_data.shape}")
 
-    data = _scaling(encoded_data, config_data["numerical_columns"])
-
-    write_csv(data, config_data["cleaned_data_path"])
+    write_csv(encoded_data, config_data["cleaned_data_path"])
