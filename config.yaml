@@ -1,11 +1,10 @@
 raw_data_path: "../data/raw_data.csv"
 cleaned_data_path: "../data/cleaned_data.csv"
-test_size: 0.3
+test_size: 0.25
 random_state: 42
-columns_to_drop: ["instant", "dteday", "casual", "registered", "atemp"]
-category_columns: ["season", "yr", "mnth", "holiday", "weekday", "workingday", "weathersit"]
-cat_columns_to_encode: ["season", "mnth", "weekday", "weathersit"]
-numerical_columns: ["temp", "hum", "windspeed"]
+columns_to_drop: ["instant", "dteday", "yr", "atemp", "windspeed", "casual", "registered"]
+category_columns: ["season", "hr", "mnth", "holiday", "weekday", "workingday", "weathersit"]
+numerical_columns: ["temp", "hum"]
 target_column: "cnt"
 weathersit_labels:
   1: "clear"
