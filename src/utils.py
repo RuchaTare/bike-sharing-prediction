@@ -5,6 +5,7 @@ This file contains utility functions that are used in the project.
 import pandas as pd
 import logging
 import yaml
+import os
 
 
 def read_yaml(file_path: str) -> dict:
@@ -59,6 +60,8 @@ def write_csv(data: pd.DataFrame, file_path: str):
     file_path : str
         The path to the csv file
     """
+
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
     logging.info(f"Writing data to {file_path}")
     data.to_csv(file_path, index=False)
