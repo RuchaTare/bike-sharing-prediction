@@ -8,13 +8,12 @@ import numpy as np
 import pandas as pd
 import sklearn
 from sklearn.ensemble import ExtraTreesRegressor, GradientBoostingRegressor, RandomForestRegressor
-from sklearn.feature_selection import RFECV, VarianceThreshold
+from sklearn.feature_selection import RFE, RFECV, VarianceThreshold
 from sklearn.linear_model import ElasticNetCV, HuberRegressor, LinearRegression, Ridge
-from sklearn.metrics import mean_squared_error
-from sklearn.model_selection import KFold, cross_val_score, train_test_split, GridSearchCV
-from sklearn.tree import DecisionTreeRegressor
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.model_selection import GridSearchCV, KFold, cross_val_score, train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.tree import DecisionTreeRegressor
 
 from utils import read_csv, read_yaml
 
@@ -89,20 +88,11 @@ def _model_selection(X: pd.DataFrame, y: pd.DataFrame, models: dict) -> sklearn.
     return best_model
 
 
-# def _rfecv(model: sklearn.base.BaseEstimator, X: pd.DataFrame, y: pd.DataFrame) -> list:
-#     """
-#     Perform Recursive Feature Elimination
-#     """
-#     logging.info("Performing Recursive Feature Elimination with Cross-Validation (RFECV)")
-#     try:
-#         rfecv = RFECV(estimator=model, step=1, cv=5, scoring="neg_mean_squared_error")
-#         rfecv.fit(X, y)
-#         logging.info("RFECV completed successfully")
-#         selected_features = X.columns[rfecv.support_]
-#         return selected_features
-#     except Exception as e:
-#         logging.error(f"Error performing RFECV: {str(e)}")
-#         return None
+def _rfecv(model: sklearn.base.BaseEstimator, X: pd.DataFrame, y: pd.DataFrame) -> list:
+    """
+    Perform Recursive Feature Elimination
+    """
+    logging.info("Performing Recursive Feature Elimination with Cross-Validation (RFECV)")
 
 
 # def hyperparameter_tuning(model, X_train, y_train):
@@ -149,20 +139,9 @@ def trainer(config_data):
 
     best_model = _model_selection(X_train, y_train, models)
 
-    # selected_features = _rfecv(best_model, X_train, y_train)
-    # logging.info(f"Selected features: {selected_features}")
-    # logging.info(f"Number of selected features: {len(selected_features)}")
+    selected_features = _rfecv(best_model, X_train, y_train)
+    logging.info(f"Selected features: {selected_features}")
+    logging.info(f"Number of selected features: {len(selected_features)}")
 
-    # X_train_filtered = X_train[selected_features]
-    # X_test_filtered = X_test[selected_features]
-    # X_train_filtered_scaled = scaler.fit_transform(X_train_filtered)
-    # X_test_filtered_scaled = scaler.transform(X_test_filtered)
-
-    # best_model = hyperparameter_tuning(best_model, X_train_filtered_scaled, y_train)
-
-    # best_model.fit(X_train_filtered_scaled, y_train)
-    # y_pred = best_model.predict(X_test_filtered_scaled)
-    # mse = np.sqrt(mean_squared_error(y_test, y_pred))
-    # mae = mean_absolute_error(y_test, y_pred)
-    # r2 = r2_score(y_test, y_pred)
-    # logging.info(f"Mean Squared Error: {mse}, Mean Absolute Error: {mae}, R2 Score: {r2}")
+    # hyper parameter tuning
+    # save model to pickle
