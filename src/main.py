@@ -18,7 +18,7 @@ def main():
     setup_logging()
     logging.info("Application started")
 
-    config_data = read_yaml("../config.yaml")
+    config_data = read_yaml("config.yaml")
 
     preprocessor(config_data)
 

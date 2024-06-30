@@ -46,6 +46,7 @@ def read_csv(file_path: str) -> pd.DataFrame:
 
     logging.info(f"Reading data from {file_path}")
     data = pd.read_csv(file_path, engine="python", encoding="utf-8")
+    logging.debug(f"shape of the data is {data.shape}")
     return data
 
 

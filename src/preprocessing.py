@@ -111,7 +111,7 @@ def _column_transform(
         )
     transformed_data_dense = transformed_data.toarray()
     transformed_data_df = pd.DataFrame(transformed_data_dense, columns=feature_names)
-    transformed_data = pd.concat([transformed_data_df, y], axis=1)
+    transformed_data_df[target_column] = y
 
     return transformed_data_df
 
@@ -129,8 +129,10 @@ def preprocessor(config_data: dict):
     preprocessed_data = _preprocess_columns(
         data, config_data["columns_to_drop"], config_data["category_columns"]
     )
+    logging.info(f"The shape of the preprocessed data is : {preprocessed_data.shape}")
 
     labelled_data = _change_labels(preprocessed_data, config_data)
+    logging.info(f"The shape of the labelled data is : {labelled_data.shape}")
 
     transformed_data = _column_transform(
         labelled_data,
@@ -138,5 +140,6 @@ def preprocessor(config_data: dict):
         config_data["category_columns"],
         config_data["numerical_columns"],
     )
+    logging.debug(f"The shape of the transformed data is : {transformed_data.shape}")
 
     write_csv(transformed_data, config_data["cleaned_data_path"])
