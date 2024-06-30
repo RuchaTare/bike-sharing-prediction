@@ -16,10 +16,10 @@ preprocessor(config_data: dict)
 import logging
 
 import pandas as pd
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
 
-from logger import setup_logging
-from utils import read_csv, read_yaml, write_csv
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from utils import read_csv, write_csv
 
 
 def _preprocess_columns(
@@ -42,7 +42,7 @@ def _preprocess_columns(
     logging.info("Preprocessing columns")
 
     data = data.drop(columns=columns_to_drop, axis=1)
-    data = data.astype({columns: "category" for columns in category_columns})
+
     return data
 
 
@@ -72,7 +72,9 @@ def _change_labels(data: pd.DataFrame, config_data: dict):
     return data
 
 
-def _one_hot_encoding(data: pd.DataFrame, category_columns: list) -> pd.DataFrame:
+def _column_transform(
+    data: pd.DataFrame, target_column: str, category_columns: list, numerical_columns: list
+) -> pd.DataFrame:
     """
     Convert the datatype of categorical columns and Create dummy variables for categorical columns
 
@@ -87,14 +89,31 @@ def _one_hot_encoding(data: pd.DataFrame, category_columns: list) -> pd.DataFram
         The data with dummy variables created
     """
 
-    logging.info("Creating dummy variables")
+    logging.info("One hot encoding categorical columns and minmax scaling numerical columns")
 
-    data = pd.get_dummies(data, columns=category_columns, drop_first=True)
+    y = data[target_column]
+    data = data.drop(columns=["cnt"])
 
-    for col in data.select_dtypes(include=["bool"]).columns:
-        data[col] = data[col].astype(int)
+    transform_object = ColumnTransformer(
+        transformers=[
+            ("cat", OneHotEncoder(), category_columns),
+            ("num", MinMaxScaler(), numerical_columns),
+        ],
+        remainder="passthrough",
+    )
 
-    return data
+    transformed_data = transform_object.fit_transform(data)
+    feature_names = transform_object.get_feature_names_out()
+
+    if transformed_data.shape[1] != len(feature_names):
+        raise ValueError(
+            f"Shape mismatch: transformed_data has {transformed_data.shape[1]} columns,but feature_names has {len(feature_names)} elements"
+        )
+    transformed_data_dense = transformed_data.toarray()
+    transformed_data_df = pd.DataFrame(transformed_data_dense, columns=feature_names)
+    transformed_data = pd.concat([transformed_data_df, y], axis=1)
+
+    return transformed_data_df
 
 
 def preprocessor(config_data: dict):
@@ -113,7 +132,11 @@ def preprocessor(config_data: dict):
 
     labelled_data = _change_labels(preprocessed_data, config_data)
 
-    encoded_data = _one_hot_encoding(labelled_data, config_data["category_columns"])
-    logging.info(f"The shape of the cleaned data is : {encoded_data.shape}")
+    transformed_data = _column_transform(
+        labelled_data,
+        config_data["target_column"],
+        config_data["category_columns"],
+        config_data["numerical_columns"],
+    )
 
-    write_csv(encoded_data, config_data["cleaned_data_path"])
+    write_csv(transformed_data, config_data["cleaned_data_path"])
