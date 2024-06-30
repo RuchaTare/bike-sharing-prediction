@@ -1,5 +1,5 @@
-raw_data_path: "../data/raw_data.csv"
-cleaned_data_path: "../data/cleaned_data.csv"
+raw_data_path: "data/raw_data.csv"
+cleaned_data_path: "data/cleaned_data.csv"
 test_size: 0.25
 random_state: 42
 columns_to_drop: ["instant", "dteday", "yr", "atemp", "windspeed", "casual", "registered"]
