@@ -88,11 +88,20 @@ def _model_selection(X: pd.DataFrame, y: pd.DataFrame, models: dict) -> sklearn.
     return best_model
 
 
-def _rfecv(model: sklearn.base.BaseEstimator, X: pd.DataFrame, y: pd.DataFrame) -> list:
+def rfecv(best_model, X_train, y_train):
     """
-    Perform Recursive Feature Elimination
+    Recursive feature elimination with cross-validation
     """
-    logging.info("Performing Recursive Feature Elimination with Cross-Validation (RFECV)")
+
+    logging.info("Performing Recursive Feature Elimination with Cross-Validation")
+    rfecv = RFECV(estimator=best_model, step=1, cv=KFold(5), scoring="neg_mean_squared_error")
+    rfecv.fit(X_train, y_train)
+    selected_features = rfecv.support_
+    print("Optimal number of features:", rfecv.n_features_)
+    print("Selected features:", selected_features)
+    X_train_selected = rfecv.transform(X_train)
+
+    return X_train_selected, selected_features
 
 
 # def hyperparameter_tuning(model, X_train, y_train):
@@ -138,10 +147,13 @@ def trainer(config_data):
     }
 
     best_model = _model_selection(X_train, y_train, models)
+    logging.info(f"Best model: {best_model}")
 
-    selected_features = _rfecv(best_model, X_train, y_train)
-    logging.info(f"Selected features: {selected_features}")
-    logging.info(f"Number of selected features: {len(selected_features)}")
+    X_train_selected, selected_features = rfecv(best_model, X_train, y_train)
+    print(f"X_train_selected {X_train_selected}")
+    print(f"selected_features {selected_features}")
+    # logging.info(f"Selected features: {selected_features}")
+    # logging.info(f"Number of selected features: {len(selected_features)}")
 
     # hyper parameter tuning
     # save model to pickle
