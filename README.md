@@ -86,4 +86,6 @@ Considering these aspects, Extra Trees Regressor would generally be the recommen
 ### Model Performance:
 
 ## Future Work
-
+    - Implement Autodocs
+    - Update README
+    - Create Notes
