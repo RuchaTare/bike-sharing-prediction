@@ -8,11 +8,10 @@ import numpy as np
 import pandas as pd
 import sklearn
 from sklearn.ensemble import ExtraTreesRegressor, GradientBoostingRegressor, RandomForestRegressor
-from sklearn.feature_selection import RFE, RFECV, VarianceThreshold
+from sklearn.feature_selection import RFE, RFECV
 from sklearn.linear_model import ElasticNetCV, HuberRegressor, LinearRegression, Ridge
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import GridSearchCV, KFold, cross_val_score, train_test_split
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.tree import DecisionTreeRegressor
 
 from utils import read_csv, read_yaml
