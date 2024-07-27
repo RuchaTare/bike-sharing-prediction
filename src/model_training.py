@@ -3,7 +3,7 @@ Model training module
 """
 
 import logging
-
+import joblib
 import numpy as np
 import pandas as pd
 import sklearn
@@ -103,19 +103,15 @@ def rfecv(best_model, X_train, y_train):
     return X_train_selected, selected_features
 
 
-# def hyperparameter_tuning(model, X_train, y_train):
-#     logging.info("Performing hyperparameter tuning")
-#     param_grid = {
-#         "n_estimators": [100, 200, 300],
-#         "learning_rate": [0.01, 0.05, 0.1],
-#         "max_depth": [3, 5, 7],
-#     }
-#     grid_search = GridSearchCV(
-#         estimator=model, param_grid=param_grid, cv=5, scoring="neg_mean_squared_error"
-#     )
-#     grid_search.fit(X_train, y_train)
-#     logging.info(f"Best parameters found: {grid_search.best_params_}")
-#     return grid_search.best_estimator_
+def train_final_model(best_model, X_train, y_train):
+    """
+    Train the final model
+    """
+
+    logging.info("Training the final model")
+    trained_model = best_model.fit(X_train, y_train)
+
+    return trained_model
 
 
 def trainer(config_data):
@@ -149,10 +145,7 @@ def trainer(config_data):
     logging.info(f"Best model: {best_model}")
 
     X_train_selected, selected_features = rfecv(best_model, X_train, y_train)
-    print(f"X_train_selected {X_train_selected}")
-    print(f"selected_features {selected_features}")
-    # logging.info(f"Selected features: {selected_features}")
-    # logging.info(f"Number of selected features: {len(selected_features)}")
 
-    # hyper parameter tuning
-    # save model to pickle
+    model = train_final_model(best_model, X_train_selected, y_train)
+    logging.info(f"Trained model: {model} save to model.pkl")
+    joblib.dump(model, "model.pkl")
