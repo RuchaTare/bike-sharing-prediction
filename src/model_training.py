@@ -3,6 +3,7 @@ Model training module
 """
 
 import logging
+
 import joblib
 import numpy as np
 import pandas as pd
@@ -10,10 +11,12 @@ import sklearn
 from sklearn.ensemble import ExtraTreesRegressor, GradientBoostingRegressor, RandomForestRegressor
 from sklearn.feature_selection import RFECV
 from sklearn.linear_model import ElasticNetCV, HuberRegressor, LinearRegression, Ridge
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-from sklearn.model_selection import GridSearchCV, KFold, cross_val_score, train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.model_selection import KFold, cross_val_score, train_test_split
 from sklearn.tree import DecisionTreeRegressor
-from utils import read_csv, read_yaml
+
+from utils import read_csv
+from model_evaluation import evaluate_model
 
 
 def _read_cleaned_data(file_path: str) -> pd.DataFrame:
@@ -43,8 +46,6 @@ def _train_test_split(
     try:
         X = data.drop(columns=[target_column])
         y = data[target_column]
-        print(X.shape, y.shape)
-        print(f"print X col and y col {X.columns, y}")
 
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=test_size, random_state=random_state
@@ -143,24 +144,3 @@ def trainer(config_data):
     joblib.dump(model, "model.pkl")
 
     evaluate_model(model, X_train_selected, X_test_selected, y_train, y_test)
-
-def evaluate_model(model, X_train, X_test, y_train, y_test):
-    """
-    Evaluate the model
-    """
-
-    logging.info("Evaluating the model")
-
-    y_train_pred = model.predict(X_train)
-    y_test_pred = model.predict(X_test)
-
-    train_rmse = np.sqrt(mean_squared_error(y_train, y_train_pred))
-    test_rmse = np.sqrt(mean_squared_error(y_test, y_test_pred))
-
-    train_r2 = r2_score(y_train, y_train_pred)
-    test_r2 = r2_score(y_test, y_test_pred)
-
-    logging.info(f"Train RMSE: {train_rmse:.4f}")
-    logging.info(f"Test RMSE: {test_rmse:.4f}")
-    logging.info(f"Train R^2: {train_r2:.4f}")
-    logging.info(f"Test R^2: {test_r2:.4f}")
