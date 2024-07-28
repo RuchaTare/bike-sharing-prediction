@@ -138,6 +138,7 @@ def trainer(config_data):
     rfecv_obj = rfecv(best_model, X_train, y_train)
     X_train_selected = rfecv_obj.transform(X_train)
     X_test_selected = rfecv_obj.transform(X_test)
+
     model = best_model.fit(X_train_selected, y_train)
 
     logging.info(f"Trained model: {model} save to model.pkl")
