@@ -60,32 +60,22 @@ Data Dictionary :
 - The demand is less on holidays and more on non holidays
 - Approximately 5000 bikes are rented on a weathersit 1 day being the highest followed by about 4000 weathersit 2 and about 2000 on weathersit3 we dont see any rentals on weathersit 4
 
+## Preprocessing:
+ - Dropped columns that seemed irrelevant from the EDA. i.e "instant", "dteday", "yr", "atemp", "windspeed", "casual", "registered"
+ - For better human readability change the labels of "weekday", weathersit, mnth, season. For Example :   1: "january",   1: "spring", etc based on the data dictionary.
+ - Scaled the numerical columns using min max scaler
+ - All categorical columns were one hot encoded.
+
 ## Model Training:
-Mean RMSE (Root Mean Squared Error): This is the average RMSE across all folds in the K-fold cross-validation. A lower mean RMSE indicates better model performance as it signifies that the model's predictions are closer to the actual values on average.
-
-Std RMSE (Standard Deviation of RMSE): This measures the variability of the RMSE across the different folds. A lower standard deviation indicates more consistent performance across different subsets of the data.
-To decide between the Random Forest Regressor and the Extra Trees Regressor, we need to consider both the mean RMSE and the standard deviation of RMSE. Here’s the comparison:
-
-Trade-off Consideration:
-If your priority is accuracy, the Random Forest Regressor has a slight edge with a lower mean RMSE.
-If you value consistency and robustness more, the Extra Trees Regressor might be preferable due to its lower standard deviation in RMSE.
-
-Given that the differences in mean RMSE are relatively small, the decision may also depend on other factors such as computational efficiency, interpretability, and specific application requirements. However, based purely on the provided RMSE values:
-
-Extra Trees Regressor is a slightly better trade-off due to its more consistent performance (lower standard deviation). The small increase in mean RMSE is often worth the gain in reliability, especially in real-world applications where consistency is crucial.
-Additional Considerations:
-Computational Cost: Extra Trees tend to be faster to train than Random Forests because they use the entire dataset to make splits at each node, rather than finding the optimal split.
-Interpretability: Both models are ensemble methods and offer similar levels of interpretability.
-Overfitting: Both models mitigate overfitting well, but Extra Trees are often less prone to overfitting due to their randomization at each split.
-Considering these aspects, Extra Trees Regressor would generally be the recommended choice given its consistency and reliability in performance.
-
-### Design Decisions:
-
-## Linear Regression Results:
+- Used K vold cross validation to select the best model among a list of regression models based on Mean RMSE.
+- Random Forest Regressor has slight edge with lower mean RMSE, although Extra tree Regressor has better Std RMSE. Since we want more accurate than more robust we chose Random Forest Regressor. It would be a good experiment to try Extra Trees Regressor to check how it performs on consistency and generalization.
+- For Feature selection, RFECV was used, that gave Optimal features = 55.
 
 ### Model Performance:
-
+- The trained model has R2 = 0.97 which is slightly overfitted compared to test RMSE = 0.83. Tried a PCA for dimensionality reduction over selected features from RFECV, but the model did not perform better infact R2 in test dropped to 0.80 while R2 in train stayed the same.
+- It would be a future work to try other feature selection methods like VIF or use ridge to reduce overfitting.
 ## Future Work
-    - Implement Autodocs
-    - Update README
-    - Create Notes
+- Implement Autodocs
+- A Streamlit app
+- Try extra trees regressor
+- Reduce overfitting
