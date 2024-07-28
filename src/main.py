@@ -4,7 +4,6 @@ Main module for the project
 
 import logging
 import os
-
 from logger import setup_logging
 from preprocessing import preprocessor
 from model_training import trainer
