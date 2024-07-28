@@ -188,3 +188,6 @@ pyrightconfig.json
 
 # venv
 venv*/
+
+#model
+*.pkl
