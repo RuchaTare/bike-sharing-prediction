@@ -22,7 +22,7 @@ weekday_labels:
   5: "sunday"
   6: "monday"
 
-mnth_labels:
+month_labels:
   1: "january"
   2: "february"
   3: "march"
