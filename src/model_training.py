@@ -17,6 +17,7 @@ from sklearn.tree import DecisionTreeRegressor
 
 from utils import read_csv
 from model_evaluation import evaluate_model
+from preprocessing import change_labels, column_transform, preprocess_columns, write_csv
 
 
 class Trainer:
@@ -52,10 +53,7 @@ class Trainer:
         target_column: str = "cnt",
         category_columns: list = None,
         numerical_columns: list = None,
-        weathersit_labels: list = None,
-        season_labels: list = None,
-        weekday_labels: list = None,
-        month_labels: list = None,
+        labels: dict = None,
         **kwargs,
     ):
         self.raw_data_path = raw_data_path
@@ -66,25 +64,27 @@ class Trainer:
         self.target_column = target_column
         self.category_columns = category_columns
         self.numerical_columns = numerical_columns
-        self.weathersit_labels = weathersit_labels
-        self.season_labels = season_labels
-        self.weekday_labels = weekday_labels
-        self.month_labels = month_labels
+        self.labels = labels
 
-    def train(self, config_data):
+    def train(self):
         """
         Train the model
         """
-        logging.info("Training the model")
+        logging.info("Training the model..")
 
-        data = self._read_cleaned_data(config_data["cleaned_data_path"])
+        data = read_csv(self.raw_data_path)
+        logging.info(f"The shape of the data is : {self.data.shape}")
+
+        self.data_preprocess(data)
+
+        cleaned_data = read_csv(self.cleaned_data_path)
         logging.info(f"The shape of cleaned data is {data.shape}")
 
         X_train, X_test, y_train, y_test = self._train_test_split(
-            data,
-            config_data["test_size"],
-            config_data["random_state"],
-            config_data["target_column"],
+            cleaned_data,
+            self.test_size,
+            self.random_state,
+            self.target_column,
         )
 
         if X_train is None or X_test is None or y_train is None or y_test is None:
@@ -115,19 +115,28 @@ class Trainer:
 
         evaluate_model(model, X_train_selected, X_test_selected, y_train, y_test)
 
-    def _read_cleaned_data(self, file_path: str) -> pd.DataFrame:
+    def data_preprocess(self, data: pd.DataFrame) -> None:
         """
-        Read the cleaned data
+        Preprocess the data
         """
 
-        logging.info("Reading the cleaned data")
+        logging.info("Preprocessing the data")
 
-        try:
-            data = read_csv(file_path)
-            print(f"data head {data.head()}")
-        except Exception as e:
-            logging.error(f"Error reading the cleaned data: {str(e)}")
-        return data
+        preprocessed_data = preprocess_columns(data, self.columns_to_drop, self.category_columns)
+        logging.info(f"The shape of the preprocessed data is : {preprocessed_data.shape}")
+
+        labelled_data = change_labels(preprocessed_data, self.labels)
+        logging.info(f"The shape of the labelled data is : {labelled_data.shape}")
+
+        transformed_data = column_transform(
+            labelled_data,
+            self.target_column,
+            self.category_columns,
+            self.numerical_columns,
+        )
+        logging.debug(f"The shape of the transformed data is : {transformed_data.shape}")
+
+        write_csv(transformed_data, self.cleaned_data_path)
 
     def _train_test_split(
         self, data: pd.DataFrame, test_size: float, random_state: int, target_column: str

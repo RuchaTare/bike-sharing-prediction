@@ -22,9 +22,7 @@ from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
 from utils import read_csv, write_csv
 
 
-def _preprocess_columns(
-    data: pd.DataFrame, columns_to_drop: list, category_columns: list
-) -> pd.DataFrame:
+def preprocess_columns(data: pd.DataFrame, columns_to_drop: list) -> pd.DataFrame:
     """
     Drop irrelevant columns, change the datatype of categorical columns and change the labels of columns
 
@@ -46,7 +44,7 @@ def _preprocess_columns(
     return data
 
 
-def _change_labels(data: pd.DataFrame, config_data: dict):
+def change_labels(data: pd.DataFrame, labels: dict) -> pd.DataFrame:
     """
     Change labels of columns to more understandable labels as per the data dictionary
 
@@ -59,10 +57,10 @@ def _change_labels(data: pd.DataFrame, config_data: dict):
     logging.info("Changing column labels to more understandable labels")
 
     column_mappings = {
-        "weekday": config_data["weekday_labels"],
-        "weathersit": config_data["weathersit_labels"],
-        "mnth": config_data["mnth_labels"],
-        "season": config_data["season_labels"],
+        "weekday": labels["weekday_labels"],
+        "weathersit": labels["weathersit_labels"],
+        "month": labels["month_labels"],
+        "season": labels["season_labels"],
     }
 
     for col, mapping in column_mappings.items():
@@ -72,7 +70,7 @@ def _change_labels(data: pd.DataFrame, config_data: dict):
     return data
 
 
-def _column_transform(
+def column_transform(
     data: pd.DataFrame, target_column: str, category_columns: list, numerical_columns: list
 ) -> pd.DataFrame:
     """
@@ -114,32 +112,3 @@ def _column_transform(
     transformed_data_df[target_column] = y
 
     return transformed_data_df
-
-
-def preprocessor(config_data: dict):
-    """
-    This preprocessor function reads the raw data, drops irrelevant columns, changes labels of columns, creates dummy variables and writes the cleaned data to a csv file
-    """
-
-    logging.info("Preprocessing the data")
-
-    data = read_csv(config_data["raw_data_path"])
-    logging.info(f"The shape of the data is : {data.shape}")
-
-    preprocessed_data = _preprocess_columns(
-        data, config_data["columns_to_drop"], config_data["category_columns"]
-    )
-    logging.info(f"The shape of the preprocessed data is : {preprocessed_data.shape}")
-
-    labelled_data = _change_labels(preprocessed_data, config_data)
-    logging.info(f"The shape of the labelled data is : {labelled_data.shape}")
-
-    transformed_data = _column_transform(
-        labelled_data,
-        config_data["target_column"],
-        config_data["category_columns"],
-        config_data["numerical_columns"],
-    )
-    logging.debug(f"The shape of the transformed data is : {transformed_data.shape}")
-
-    write_csv(transformed_data, config_data["cleaned_data_path"])
