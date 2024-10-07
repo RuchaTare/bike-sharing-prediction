@@ -1,0 +1,72 @@
+{
+  "data_ingestion": {
+    "raw_data_path": "data/raw_data.csv",
+    "cleaned_data_path": "data/cleaned_data.csv"
+  },
+  "trainer": {
+    "model_path": "models/model.pkl",
+    "test_size": 0.25,
+    "random_state": 42,
+    "columns_to_drop": [
+      "instant",
+      "dteday",
+      "yr",
+      "atemp",
+      "windspeed",
+      "casual",
+      "registered"
+    ],
+    "category_columns": [
+      "season",
+      "hr",
+      "yr",
+      "mnth",
+      "holiday",
+      "weekday",
+      "workingday",
+      "weathersit"
+    ],
+    "numerical_columns": [
+      "temp",
+      "hum"
+    ],
+    "target_column": "cnt",
+    "labels": {
+      "weathersit_labels": {
+        "1": "clear",
+        "2": "cloudy",
+        "3": "light snow/rain",
+        "4": "heavy rain"
+      },
+      "weekday_labels": {
+        "0": "tuesday",
+        "1": "wednesday",
+        "2": "thursday",
+        "3": "friday",
+        "4": "saturday",
+        "5": "sunday",
+        "6": "monday"
+      },
+      "month_labels": {
+        "1": "january",
+        "2": "february",
+        "3": "march",
+        "4": "april",
+        "5": "may",
+        "6": "june",
+        "7": "july",
+        "8": "august",
+        "9": "september",
+        "10": "october",
+        "11": "november",
+        "12": "december"
+      },
+      "season_labels": {
+        "1": "spring",
+        "2": "summer",
+        "3": "fall",
+        "4": "winter"
+      }
+    }
+  }
+}

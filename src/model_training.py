@@ -73,7 +73,7 @@ class Trainer:
         logging.info("Training the model..")
 
         data = read_csv(self.raw_data_path)
-        logging.info(f"The shape of the data is : {self.data.shape}")
+        logging.info(f"The shape of the data is : {data.shape}")
 
         self.data_preprocess(data)
 

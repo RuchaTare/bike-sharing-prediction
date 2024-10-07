@@ -61,6 +61,8 @@ Essentially the company wants :
 - It would be a future work to try other feature selection methods like VIF or use ridge to reduce overfitting.
 
 ## Future Work
+- Check if the data is linear
+- Create a dummy regressor with sklearn
 - Implement Autodocs
 - A Streamlit app
 - Try extra trees regressor
@@ -68,3 +70,4 @@ Essentially the company wants :
 ## Contribution
 If you want to contribute to enhancements and changes, please open an issue first to discuss what you would like to change or contribute.PRs welcome
 ## License
+
