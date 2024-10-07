@@ -1,4 +1,10 @@
 {
+  "logging": {
+    "log_to_file": true,
+    "dir": "logs",
+    "level": "DEBUG",
+    "format": "[%(asctime)s] - %(levelname)s - %(funcName)s - %(message)s"
+  },
   "data_ingestion": {
     "raw_data_path": "data/raw_data.csv",
     "cleaned_data_path": "data/cleaned_data.csv"

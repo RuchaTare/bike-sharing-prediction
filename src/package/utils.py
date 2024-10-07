@@ -6,9 +6,10 @@ import pandas as pd
 import logging
 import yaml
 import os
+import json
 
 
-def read_yaml(file_path: str) -> dict:
+def read_json(file_path: str) -> dict:
     """
     Read yaml file and return the content
 
@@ -23,9 +24,9 @@ def read_yaml(file_path: str) -> dict:
         The content of the yaml file
     """
 
-    logging.info("Reading config file")
+    logging.info("Reading config json")
     with open(file_path, "r") as file:
-        config_data = yaml.safe_load(file)
+        config_data = json.load(file)
     return config_data
 
 

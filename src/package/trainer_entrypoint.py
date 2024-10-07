@@ -1,14 +1,10 @@
 """
-Entrypoint for model training. Calls setup_logging, read_yaml, preprocessor, and trainer functions
+Entrypoint for model training. Calls setup_logging, data ingestion, trainer functions
 """
 
-import logging
-
+import os
+from utils import read_json
 from logger import setup_logging
-from model_training import trainer
-from preprocessing import preprocessor
-from model_training import Trainer
-from utils import read_yaml
 
 
 def entrypoint(config_data: dict) -> None:
@@ -20,8 +16,8 @@ def entrypoint(config_data: dict) -> None:
     config_data : dict
         Configuration data
     """
-
-    setup_logging()
+    dict.update(config_data["logging"], {"module": "trainer"})
+    setup_logging(config_data["logging"])
 
     logging.info("Create Data Ingestion object")
     data_ingestion = DataIngestion(config_data["data_ingestion"])
@@ -36,5 +32,5 @@ def entrypoint(config_data: dict) -> None:
 
 
 if __name__ == "__main__":
-    config_data = read_yaml("config.yaml")
+    config_data = read_json("trainer_config.json")
     entrypoint(config_data)
